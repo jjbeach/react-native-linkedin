@@ -40,6 +40,7 @@ interface State {
 interface Props {
   clientID: string
   clientSecret?: string
+  authUrl?: string,
   redirectUri: string
   authState?: string
   permissions: string[]
@@ -98,12 +99,13 @@ export const injectedJavaScript = `
 `
 
 export const getAuthorizationUrl = ({
+  authUrl,
   authState,
   clientID,
   permissions,
   redirectUri,
 }: Partial<Props>) =>
-  `${AUTHORIZATION_URL}?${querystring.stringify({
+  `${ authUrl ? authUrl : AUTHORIZATION_URL }?${querystring.stringify({
     response_type: 'code',
     client_id: clientID,
     scope: permissions!.join(' ').trim(),
@@ -199,6 +201,7 @@ export default class LinkedInModal extends React.Component<Props, State> {
   static propTypes = {
     clientID: PropTypes.string.isRequired,
     clientSecret: PropTypes.string,
+    authUrl: PropTypes.string,
     redirectUri: PropTypes.string.isRequired,
     permissions: PropTypes.array,
     authState: PropTypes.string,
